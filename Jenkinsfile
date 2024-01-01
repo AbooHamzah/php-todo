@@ -3,7 +3,7 @@ pipeline {
 
   stages {
 
-     stage("Initial cleanup") {
+    stage("Initial cleanup") {
           steps {
             dir("${WORKSPACE}") {
               deleteDir()
@@ -56,6 +56,18 @@ pipeline {
 
 
       }
+    }
+
+    stage('SonarQube Quality Gate') {
+        environment {
+            scannerHome = tool 'SonarQubeScanner'
+        }
+        steps {
+            withSonarQubeEnv('sonarqube') {
+                sh "${scannerHome}/bin/sonar-scanner"
+            }
+
+        }
     }
 
     stage ('Package Artifact') {
